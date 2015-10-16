@@ -1,0 +1,116 @@
+function customer():
+	Create random dates and store in list { dates }
+	Read randomnames from file { randomnames.txt } and store in list { names }
+	Remove whitespace and store in new list { newnames }
+
+	Create empty string { sql }
+	Ask user for customer table name and store in { table }
+	{ sql } = 	'INSERT INTO ' + { table } + '\n'
+	{ sql } += 	'VALUES \n'
+
+	Loop through length of {newnames}:
+		If length of the names item > 0:
+			Split the { name[item] } by whitespace to create { splitname }
+			{ firstname } =  splitname[0]
+			Make { firstname } lowercase		
+			{ lastname } = splitname[1]
+			{ email } = { firstname } in lowercase + '@gmail.com'
+
+			{ sql } +=	" ( "
+			{ sql } += 	" ' " + { firstname } 	+ " ' , "
+			{ sql } += 	" ' " + { lastname } 	+ " ' , " 	
+			{ sql } += 	{ date_of_birth }	+ " , "
+			{ sql } += 	{ email }
+			{ sql } += 	" ) "
+			
+			As long it is not last item :
+				{ sql } +=  " , "
+			
+			{ sql } += 	" \n "
+	Print " 'customer' populate script is successfully built "
+	Open {'populate.txt'} in write mode as {f}
+	Write {sql} to {f}
+	Close {f}
+
+
+
+function reviews():
+	Open {'randomtext.txt'} in read mode as {f}
+	Read lines from {f} and store as list {text}
+	Clean whitespaces and newlines in {text} and store it as {review_text}
+	
+	Create empty string {sql}
+	Ask user for customer table name and store in {table}
+	{sql} = 	'INSERT INTO ' + {table} + '\n'
+	{sql} += 	'VALUES \n'
+
+	Initiate { count } as 0
+
+	{movienum} = 50
+	Itereate {i} through length of {movienum} : 
+		Increment {count} by 1
+		{movie_id_sql}  =  str{i} + ","
+		Generate a random number between 0 and 25 and store it as {number_of_reviews}
+		Generate a unique list of {number_of_reviews} numbers having integer values between 1 and 50 and store in {customer_id_random} list
+
+		
+		Iterate {j} for length of {number_of_reviews} :
+			{customer_id} = {customer_id_random}[j]
+			Get a review_text[k] where 'k' is random number between 0-50 and store it as {review}
+			Generate random number withing 0 to 5 and store in {rating}
+			Generate random date within Jan 2015 to July 2015 and store in {date}
+			
+			{customer_id_sql}		= 	{customer_id} 	+ " , "
+			{review_rating_sql} 	= 	{rating} 		+ " , "
+			{review_content_sql}  	= 	" ' " 	+ {review} 		+ " ' "  + " , "
+			{review_datetime_sql}	= 	" ' " 	+ {date} 		+ " ' " + " , "		
+
+			{sql} += "(" + {movie_id_sql} + {customer_id_sql} + {review_content_sql} + {review_rating_sql} + {review_datetime_sql} + ")"
+
+		If count is less than last item:
+			{sql} += ","
+		{sql} += 	" \n "		
+
+	Print " 'review' populate script is successfully built "
+	Open {'populate_review.txt'} in write mode as {f}
+	Write {sql} to {f}
+	Close {f}
+
+
+
+function tickets():
+	{session_id_count} = 17
+	{customer_id_count} = 50
+
+	Create empty string {sql}
+	Prompt "Enter the table name you wish to store your 'tickets' detail" and store in {table}
+	{sql} = 	'INSERT INTO ' + {table} + '\n'
+	{sql} += 	'VALUES \n'
+
+	Initiate { count } as 0
+	Iterate {i} for length of {session_id_count}:
+		Increment {count} by 1
+		Iterate {j} for length of {20}:
+			Generate a random INT between 1 and 50 and store as {random_customer_id}
+			{session_id_sql} = str({i})
+			{customer_id_sql} = str({random_customer_id})
+
+			{sql} += "	(" + {customer_id_sql} + "," + {session_id_sql} + ")"
+
+			If {i} < {session_id_count}:
+				sql += ",\n"
+			Else:
+				{sql} += ";\n"
+
+
+	Store file name for writing the script as {filename}
+	Print " 'tickets' populate script is successfully built..."
+	Open {filename} in write mode as {f}
+	Write {sql} to {f}
+	Close {f}
+
+function main():
+	customer()
+	reviews()			
+	tickets()
+
